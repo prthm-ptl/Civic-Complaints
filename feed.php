@@ -1,4 +1,5 @@
 <?php 
+    session_start();
     if(isset($_SESSION['user']))
         {
             echo "welcome, MR" . $_SESSION['user'];
