@@ -2,49 +2,54 @@
 session_start();
 $con=mysqli_connect("localhost","root","","CivicComplaintsDB");
 ?>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
-    <input type="text" name="name" placeholder="your name"/>
-    <input type="text" name="username_php" placeholder="username"/>
-    <input type="password" name="pswd_php" placeholder="password"/>
-    <select name="role_php">
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data" >
+    <input type="text" name="name" placeholder="your name" pattern="[a-zA-Z]+" required/>
+    <input type="text" name="username_php" placeholder="username" pattern="[a-zA-Z0-9]+" required/>
+    <input type="password" name="pswd_php" placeholder="password" required/>
+    <select name="role_php" >
         <option>citizen</option>
         <option>officer</option>
     </select>
-    <input type="file" name="pfp_php" />
     <input type="submit" name="sub"/>
 </form>
 
 <?php
                    
-
     if(isset($_REQUEST['sub']))
         {
-            $name = $_REQUEST['name'];
+            $name = ucfirst($_REQUEST['name']); //to capitalize the first letter of the name
             $username = $_REQUEST['username_php'];
             $pswd = password_hash($_REQUEST['pswd_php'],PASSWORD_BCRYPT);
             $role = $_REQUEST['role_php'];
-
-            $photoname = $_FILES["pfp_php"]["name"];
-
-            if(strlen($photoname) == 0){
-                $photoname = "default.jpg";
-            }
-            else{
-                $path = "/opt/lampp/htdocs/dashboard/CivicComplaints/Civic-Complaints/photos/";
-                $newpath = $path . $photoname ;
-                if(!move_uploaded_file($_FILES["pfp_php"]["tmp_name"], $newpath)){
-                echo "error";
-                }
-            }
+            $photoname = $name[0] . ".png"; //to set the profile picture name as the first letter of the name with .png extension
             
-            $newpath = "/dashboard/CivicComplaints/Civic-Complaints/photos/" . $photoname;
-            $q="INSERT INTO `users` (`username`, `password`, `name`, `role`, `pfp`) VALUES ('$username','$pswd','$name','$role','$newpath')";
-            if(mysqli_query($con,$q))
+            $q="INSERT INTO `users` (`username`, `password`, `name`, `role`, `pfp`) VALUES ('$username','$pswd','$name','$role','$photoname')";
+            if(!mysqli_query($con,$q))
                 {
-                    echo "done";
+                    echo "Error: " . mysqli_error($con);
                 }
-                else{
-                    echo "error";
+            $ver_username = $_REQUEST["username_php"];
+            $ver_pswd = $_REQUEST["pswd_php"];
+
+            $q="SELECT * FROM `users` WHERE username='$ver_username'";
+            if($p=mysqli_query($con,$q))
+                {   
+                    if(mysqli_num_rows($p))
+                        {
+                            $array=mysqli_fetch_array($p);
+                            if($ver_username && password_verify($ver_pswd,$array['password']))
+                                {
+                                    $_SESSION['role']=$array['role'];
+                                    $_SESSION['user']=$array['name'];
+                                    header("location: feed.php");
+                                }
+                                else{
+                                    echo "error: username or password mismatch";
+                                }
+                        }
+                    else{
+                        echo "error: username or password mismatch";
+                    }
                 }
         }
 ?>
