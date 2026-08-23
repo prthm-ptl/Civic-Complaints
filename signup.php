@@ -1,11 +1,6 @@
 <?php
 session_start();
 $con=mysqli_connect("localhost","root","","CivicComplaintsDB");
-if(!isset($_SESSION['signup']))
-{
-    echo "invalid access";
-}
-else{
 ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data" >
     <input type="text" name="name" placeholder="your name" pattern="[a-zA-Z]+" required/>
@@ -48,7 +43,6 @@ else{
                                     $_SESSION['userid']=$array['user_id'];
                                     $_SESSION['role']=$array['role'];
                                     $_SESSION['user']=$array['name'];
-                                    unset($_SESSION['signup']);
                                     header("location: feed.php");
                                 }
                                 else{
@@ -60,5 +54,5 @@ else{
                     }
                 }
         }
-}
+
 ?>

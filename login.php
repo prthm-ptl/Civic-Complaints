@@ -40,7 +40,6 @@ session_start();
     
     if(isset($_REQUEST["sign_up"]))
         {
-            $_SESSION['signup'] = 1;
             header("location: signup.php");
         }
 ?>
