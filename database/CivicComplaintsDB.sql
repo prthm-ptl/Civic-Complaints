@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 22, 2026 at 06:27 PM
+-- Generation Time: Aug 23, 2026 at 11:46 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -34,19 +34,8 @@ CREATE TABLE `users` (
   `name` varchar(20) NOT NULL,
   `role` enum('citizen','officer') NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `pfp` varchar(255) NOT NULL
+  `pfp` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`user_id`, `username`, `password`, `name`, `role`, `created_at`, `pfp`) VALUES
-(8, '', '$2y$10$bkSQW8yYwy/x8oDBaZJlzO0aK.Maxz/ufGG56ZKNfDLPHh1uFjLfy', '', 'citizen', '2026-08-22 12:16:44', '/dashboard/CIvicComplaints/Civic-Complaints/photos/Pain.jpg'),
-(9, 'papapapap', '$2y$10$1ddbmzk95pUNM8SvORVa0eOyOfLJYer96xaPFDPI1ZI4k1DgrUHFy', 'papapa', 'citizen', '2026-08-22 12:17:15', '/dashboard/CIvicComplaints/Civic-Complaints/photos/default.png'),
-(10, 'praaa', '$2y$10$Lt8KshZLHAFMXwbE/hhJueiveU.jw179r7QmMn/28KJsFHpKpRg1W', 'praaa', 'citizen', '2026-08-22 12:30:34', '/dashboard/CIvicComplaints/Civic-Complaints/photos/default.jpg'),
-(11, 'ttt', '$2y$10$PVJEdOSawXUpFLET58as9O/fpU/rPp85DGdmLgI6WttEDWb9vaozS', 'ttt', 'citizen', '2026-08-22 12:30:56', '/dashboard/CIvicComplaints/Civic-Complaints/photos/Gargantua.jpg'),
-(13, 'prathamp', '$2y$10$JISjfxozxgfnXrwcZz3ZTuAoxD5lQ2fuvwR5oJysOH1LZ6Il1NEwe', 'pratham', 'officer', '2026-08-22 12:33:57', '/dashboard/CivicComplaints/Civic-Complaints/photos/Earth.jpg');
 
 --
 -- Indexes for dumped tables
@@ -67,7 +56,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
