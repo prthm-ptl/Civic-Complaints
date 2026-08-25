@@ -1,6 +1,10 @@
 <?php
 session_start();
 $con=mysqli_connect("localhost","root","","CivicComplaintsDB");
+
+echo "<a href='login.php'>";
+$backpath = "/dashboard/CivicComplaints/Civic-Complaints/photos/" . "back.jpg";
+echo "<img src='$backpath' width='50px'></a>";
 ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data" >
     <input type="text" name="name" placeholder="your name" pattern="[a-zA-Z]+" required/>
@@ -14,7 +18,6 @@ $con=mysqli_connect("localhost","root","","CivicComplaintsDB");
 </form>
 
 <?php
-    echo "<a href='login.php'>login insted</a>";
                    
     if(isset($_REQUEST['sub']))
         {

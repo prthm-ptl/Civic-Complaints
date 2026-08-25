@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 24, 2026 at 12:40 AM
+-- Generation Time: Aug 25, 2026 at 06:02 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -34,9 +34,32 @@ CREATE TABLE `complaints` (
   `description` text NOT NULL,
   `category` enum('road','drain','garbage','corruption','other') NOT NULL,
   `city` varchar(100) NOT NULL,
-  `photo` varchar(255) DEFAULT NULL,
   `status` enum('open','in_progress','resolved') DEFAULT 'open',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `complaints`
+--
+
+INSERT INTO `complaints` (`complaint_id`, `user_id`, `title`, `description`, `category`, `city`, `status`, `created_at`) VALUES
+(8, 25, 'air', 'air', 'other', 'mehsana', 'open', '2026-08-25 11:40:49'),
+(11, 25, 'earth', 'earth', 'other', 'earth', 'open', '2026-08-25 12:22:51'),
+(13, 25, 'tutututu', 'tuttutuut', 'road', 'rrrtt', 'open', '2026-08-25 12:29:22');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `complaint_images`
+--
+
+CREATE TABLE `complaint_images` (
+  `id` int(11) NOT NULL,
+  `complaint_id` int(11) NOT NULL,
+  `image_path` varchar(300) NOT NULL,
+  `type` enum('complaint','resolution') DEFAULT 'complaint',
+  `uploaded_by` int(11) DEFAULT NULL,
+  `uploaded_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -60,7 +83,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `password`, `name`, `role`, `created_at`, `pfp`) VALUES
-(21, 'prathamp', '$2y$10$GHdb.zF3VQT0Uamlne1b/O7Jx9LKr.XQBhZ4C5Fo.d80bMhv5pVZa', 'Pratham', 'citizen', '2026-08-23 18:56:56', 'P.png');
+(25, 'prathamptl', '$2y$10$Ph7SlkSeHIm/pPN/4yuU2eKzDPSKX85xJf3976Zv9IvsLt3/YhFCW', 'Pratham', 'citizen', '2026-08-25 08:22:31', 'P.png');
 
 --
 -- Indexes for dumped tables
@@ -72,6 +95,13 @@ INSERT INTO `users` (`user_id`, `username`, `password`, `name`, `role`, `created
 ALTER TABLE `complaints`
   ADD PRIMARY KEY (`complaint_id`),
   ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `complaint_images`
+--
+ALTER TABLE `complaint_images`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `complaint_id` (`complaint_id`);
 
 --
 -- Indexes for table `users`
@@ -88,13 +118,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `complaints`
 --
 ALTER TABLE `complaints`
-  MODIFY `complaint_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `complaint_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `complaint_images`
+--
+ALTER TABLE `complaint_images`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- Constraints for dumped tables
@@ -105,6 +141,12 @@ ALTER TABLE `users`
 --
 ALTER TABLE `complaints`
   ADD CONSTRAINT `complaints_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `complaint_images`
+--
+ALTER TABLE `complaint_images`
+  ADD CONSTRAINT `complaint_images_ibfk_1` FOREIGN KEY (`complaint_id`) REFERENCES `complaints` (`complaint_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
