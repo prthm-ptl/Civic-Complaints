@@ -59,15 +59,21 @@ if(isset($_REQUEST['sub']))
             }
         else{
             echo "Complaint posted successfully";
+            $abc=1;
         }
         
         $complaint_id = mysqli_insert_id($con);
 
-        $qimage="INSERT INTO `complaint_images` (`complaint_id`, `image_path`, `type`, `uploaded_by`, `uploaded_at`) VALUES ('$complaint_id', '$image', 'complaint', NULL)";
+        $qimage="INSERT INTO `complaint_images` (`complaint_id`, `image_path`, `type`, `uploaded_by`) VALUES ('$complaint_id', '$image', 'complaint', NULL)";
         if(!mysqli_query($con,$qimage))
             {
-                echo "Error: " . mysqli_error($con);    //not working
+                echo "Error: " . mysqli_error($con);    //working
             }
+
+        // if(isset($_request['sub']) and $abc==1)
+        // {
+        //     header("location:feed.php");
+        // }
     }
 } 
 ?>
