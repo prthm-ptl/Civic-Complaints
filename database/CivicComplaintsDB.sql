@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 25, 2026 at 06:02 PM
+-- Generation Time: Aug 27, 2026 at 03:21 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -38,15 +38,6 @@ CREATE TABLE `complaints` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `complaints`
---
-
-INSERT INTO `complaints` (`complaint_id`, `user_id`, `title`, `description`, `category`, `city`, `status`, `created_at`) VALUES
-(8, 25, 'air', 'air', 'other', 'mehsana', 'open', '2026-08-25 11:40:49'),
-(11, 25, 'earth', 'earth', 'other', 'earth', 'open', '2026-08-25 12:22:51'),
-(13, 25, 'tutututu', 'tuttutuut', 'road', 'rrrtt', 'open', '2026-08-25 12:29:22');
-
 -- --------------------------------------------------------
 
 --
@@ -77,13 +68,6 @@ CREATE TABLE `users` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `pfp` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`user_id`, `username`, `password`, `name`, `role`, `created_at`, `pfp`) VALUES
-(25, 'prathamptl', '$2y$10$Ph7SlkSeHIm/pPN/4yuU2eKzDPSKX85xJf3976Zv9IvsLt3/YhFCW', 'Pratham', 'citizen', '2026-08-25 08:22:31', 'P.png');
 
 --
 -- Indexes for dumped tables
@@ -118,19 +102,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `complaints`
 --
 ALTER TABLE `complaints`
-  MODIFY `complaint_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `complaint_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `complaint_images`
 --
 ALTER TABLE `complaint_images`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
