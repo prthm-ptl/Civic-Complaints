@@ -59,7 +59,7 @@ if(isset($_REQUEST['sub']))
             }
         else{
             echo "Complaint posted successfully";
-            $abc=1;
+            $_SESSION['cposted']=1;
         }
         
         $complaint_id = mysqli_insert_id($con);
@@ -67,13 +67,14 @@ if(isset($_REQUEST['sub']))
         $qimage="INSERT INTO `complaint_images` (`complaint_id`, `image_path`, `type`, `uploaded_by`) VALUES ('$complaint_id', '$image', 'complaint', NULL)";
         if(!mysqli_query($con,$qimage))
             {
-                echo "Error: " . mysqli_error($con);    //working
+                echo "Error: " . mysqli_error($con);    
             }
 
-        // if(isset($_request['sub']) and $abc==1)
-        // {
-        //     header("location:feed.php");
-        // }
+        if(isset($_request['sub']) and isset($abc))
+        {
+            unset($_SESSION['cposted']);
+            header("location:feed.php");
+        }
     }
 } 
 ?>
