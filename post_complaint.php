@@ -59,7 +59,7 @@ if(isset($_REQUEST['sub']))
             }
         else{
             echo "Complaint posted successfully";
-            $_SESSION['cposted']=1;
+            $abc=1;
         }
         
         $complaint_id = mysqli_insert_id($con);
@@ -70,9 +70,8 @@ if(isset($_REQUEST['sub']))
                 echo "Error: " . mysqli_error($con);    
             }
 
-        if(isset($_request['sub']) and isset($abc))
+        if(isset($_REQUEST['sub']) and isset($abc))
         {
-            unset($_SESSION['cposted']);
             header("location:feed.php");
         }
     }
