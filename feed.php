@@ -6,6 +6,12 @@
             echo "welcome, MR" . $_SESSION['user'] . "<br>";
             echo "<a href='post_complaint.php'>post a complaint</a>" . "<br>";
             echo "<a href='logout.php'>logout</a>";
+
+            if(isset($_SESSION['message']))
+            {
+            echo "<p>" . $_SESSION['message'] . "</p>";
+            unset($_SESSION['message']); 
+            }
         }
     else{
         echo "<a href='login.php'>login to post a complaint.</a>";

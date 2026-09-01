@@ -58,7 +58,6 @@ if(isset($_REQUEST['sub']))
                 echo "Error: " . mysqli_error($con);
             }
         else{
-            echo "Complaint posted successfully";
             $abc=1;
         }
         
@@ -72,6 +71,7 @@ if(isset($_REQUEST['sub']))
 
         if(isset($_REQUEST['sub']) and isset($abc))
         {
+            $_SESSION['message'] = "Complaint posted successfully!";
             header("location:feed.php");
         }
     }
