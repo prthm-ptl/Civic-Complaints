@@ -8,13 +8,18 @@ if(!isset($_SESSION['userid']))
 }
 else{
 
-echo "<a href='feed.php'>";
-$backpath = "/dashboard/CivicComplaints/Civic-Complaints/photos/" . "back.jpg";
-echo "<img src='$backpath' width='50px'></a>";
+
 
 ?>
-
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data" >
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>post_complaint</title>
+</head>
+<body>
+    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data" >
     <input type="text" name="title_php" placeholder="title of complaint" required/>
     <textarea name="desc_php" placeholder="description of complaint" required></textarea>
     <select name="category_php" required>
@@ -30,7 +35,9 @@ echo "<img src='$backpath' width='50px'></a>";
 </form>
 
 <?php
-
+echo "<a href='feed.php'>";
+$backpath = "/dashboard/CivicComplaints/Civic-Complaints/photos/" . "back.jpg";
+echo "<img src='$backpath' width='50px'></a>";
 
 if(isset($_REQUEST['sub']))
     {
@@ -96,3 +103,6 @@ if(isset($_REQUEST['sub']))
     }
 } 
 ?>
+</body>
+</html>
+

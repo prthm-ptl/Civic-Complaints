@@ -1,9 +1,18 @@
 <?php 
+session_start();
 $con = new mysqli("localhost","root","","CivicComplaintsDB");
 if($con->connect_error) die("Connection Failed: " . $con->connect_error);
-session_start();
+
 ?>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" >
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+</head>
+<body>
+    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" >
     <input type="text" name="username_php" placeholder="username"/>
     <input type="password" name="pswd_php" placeholder="password" />
     <input type="submit" name="sub" value="submit"/>
@@ -47,3 +56,6 @@ session_start();
             header("location: signup.php");
         }
 ?>
+</body>
+</html>
+

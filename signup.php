@@ -3,11 +3,19 @@ session_start();
 $con = new mysqli("localhost","root","","CivicComplaintsDB");
 if($con->connect_error) die("Connection Failed: " . $con->connect_error);
 
-echo "<a href='login.php'>";
-$backpath = "/dashboard/CivicComplaints/Civic-Complaints/photos/" . "back.jpg";
-echo "<img src='$backpath' width='50px'></a>";
+
 ?>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data" >
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>signup</title>
+</head>
+<body>
+    
+
+    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data" >
     <input type="text" name="name" placeholder="your name" pattern="[a-zA-Z]+" required/>
     <input type="text" name="username_php" placeholder="username" pattern="[a-zA-Z0-9]+" required/>
     <input type="password" name="pswd_php" placeholder="password" required/>
@@ -19,6 +27,9 @@ echo "<img src='$backpath' width='50px'></a>";
 </form>
 
 <?php
+    echo "<a href='login.php'>";
+    $backpath = "/dashboard/CivicComplaints/Civic-Complaints/photos/" . "back.jpg";
+    echo "<img src='$backpath' width='50px'></a>";
                    
     if(isset($_REQUEST['sub']))
         {
@@ -64,3 +75,5 @@ echo "<img src='$backpath' width='50px'></a>";
         }
 
 ?>
+</body>
+</html>
