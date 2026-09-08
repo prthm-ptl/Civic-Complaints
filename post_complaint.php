@@ -1,6 +1,7 @@
 <?php
 session_start();
-$con=mysqli_connect("localhost","root","","CivicComplaintsDB");
+$con = new mysqli("localhost","root","","CivicComplaintsDB");
+if($con->connect_error) die("Connection Failed: " . $con->connect_error);
 if(!isset($_SESSION['userid']))
 {
     echo "<a href='login.php'>login first</a>";
@@ -40,33 +41,51 @@ if(isset($_REQUEST['sub']))
         
         $userid = $_SESSION['userid'];
         $image = $_FILES['image']['name'];
-        if(strlen($image)!=0)
-        {
-            $path="/opt/lampp/htdocs/dashboard/CivicComplaints/Civic-Complaints/complaints/images/";
-            $newpath = $path . $image ;
-            move_uploaded_file($_FILES["image"]["tmp_name"],$newpath);
-        }
-        else
+        if (!empty($_FILES['image']['name']))
             {
-            $image="No image";
+                $allowed_extensions = ['jpg', 'jpeg', 'png'];
+                $allowed_mimes = ['image/jpeg', 'image/png'];
+
+                $file_ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+                $file_mime = mime_content_type($_FILES['image']['tmp_name']); // checks actual file content, not just name
+
+                if (!in_array($file_ext, $allowed_extensions) || !in_array($file_mime, $allowed_mimes))
+                {
+                    die("Error: Only JPG and PNG images are allowed.");
+                }
+
+                // rename file to avoid collisions and hide original name
+                $image = uniqid() . '.' . $file_ext;
+                $path = "/opt/lampp/htdocs/dashboard/CivicComplaints/Civic-Complaints/complaints/photos/";
+                $newpath = $path . $image;
+
+                if (!move_uploaded_file($_FILES["image"]["tmp_name"], $newpath))
+                {
+                    echo "Error: Could not save image.";
+                }
+            }
+            else
+            {
+                $image = "No image";
             }
         
 
-        $q="INSERT INTO `complaints` (`user_id`, `title`, `description`, `category`, `city`) VALUES ('$userid','$title','$desc','$category','$city')";
-        if(!mysqli_query($con,$q))
+        $q = $con->prepare("INSERT INTO `complaints` (`user_id`, `title`, `description`, `category`, `city`) VALUES (?,?,?,?,?)");
+        $q->bind_param("issss", $userid, $title, $desc, $category, $city);
+        if(!$q->execute())
             {
-                echo "Error: " . mysqli_error($con);
+                echo "Error: " . $con->error;
             }
         else{
+            $complaint_id = $con->insert_id;
             $abc=1;
         }
         
-        $complaint_id = mysqli_insert_id($con);
-
-        $qimage="INSERT INTO `complaint_images` (`complaint_id`, `image_path`, `type`, `uploaded_by`) VALUES ('$complaint_id', '$image', 'complaint', NULL)";
-        if(!mysqli_query($con,$qimage))
+        $qimage = $con->prepare("INSERT INTO `complaint_images` (`complaint_id`, `image_path`, `type`, `uploaded_by`) VALUES (?, ?, 'complaint', NULL)");
+        $qimage->bind_param("is", $complaint_id, $image);
+        if(!$qimage->execute())
             {
-                echo "Error: " . mysqli_error($con);    
+                echo "Error: " . $con->error;
             }
 
         if(isset($_REQUEST['sub']) and isset($abc))

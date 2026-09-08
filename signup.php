@@ -1,6 +1,7 @@
 <?php
 session_start();
-$con=mysqli_connect("localhost","root","","CivicComplaintsDB");
+$con = new mysqli("localhost","root","","CivicComplaintsDB");
+if($con->connect_error) die("Connection Failed: " . $con->connect_error);
 
 echo "<a href='login.php'>";
 $backpath = "/dashboard/CivicComplaints/Civic-Complaints/photos/" . "back.jpg";
@@ -27,16 +28,20 @@ echo "<img src='$backpath' width='50px'></a>";
             $role = $_REQUEST['role_php'];
             $photoname = $name[0] . ".png"; //to set the profile picture name as the first letter of the name with .png extension
             
-            $q="INSERT INTO `users` (`username`, `password`, `name`, `role`, `pfp`) VALUES ('$username','$pswd','$name','$role','$photoname')";
-            if(!mysqli_query($con,$q))
+            $q = $con->prepare("INSERT INTO `users` (`username`, `password`, `name`, `role`, `pfp`) VALUES (?,?,?,?,?)");
+            $q->bind_param("sssss", $username, $pswd, $name, $role, $photoname);
+            if(!$q->execute())
                 {
-                    echo "Error: " . mysqli_error($con);
+                    echo "Error: " . $con->error;
                 }
             $ver_username = $_REQUEST["username_php"];
             $ver_pswd = $_REQUEST["pswd_php"];
 
-            $q="SELECT * FROM `users` WHERE username='$ver_username'";
-            if($p=mysqli_query($con,$q))
+            $q = $con->prepare("SELECT * FROM `users` WHERE username=?");
+            $q->bind_param("s", $ver_username);
+            $q->execute();
+            $p = $q->get_result();
+            if($p)
                 {   
                     if(mysqli_num_rows($p))
                         {

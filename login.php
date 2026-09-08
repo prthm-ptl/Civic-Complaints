@@ -1,5 +1,6 @@
 <?php 
-$con = mysqli_connect("localhost","root","","CivicComplaintsDB") or die("Connection Failed");
+$con = new mysqli("localhost","root","","CivicComplaintsDB");
+if($con->connect_error) die("Connection Failed: " . $con->connect_error);
 session_start();
 ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" >
@@ -15,8 +16,11 @@ session_start();
             $ver_username = $_REQUEST["username_php"];
             $ver_pswd = $_REQUEST["pswd_php"];
 
-            $q="SELECT * FROM `users` WHERE username='$ver_username'";
-            if($p=mysqli_query($con,$q))
+            $q = $con->prepare("SELECT * FROM `users` WHERE username=?");
+            $q->bind_param("s", $ver_username);
+            $q->execute();
+            $p = $q->get_result();
+            if($p)
                 {   
                     if(mysqli_num_rows($p))
                         {
