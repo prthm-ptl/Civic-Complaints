@@ -28,9 +28,10 @@
     
     <?php
         
-        $q="SELECT * 
+        $q="SELECT c.*,ci.image_path
             FROM `complaints` as `c`
-            JOIN `complaint_images` as `ci` ON c.complaint_id=ci.complaint_id";
+            LEFT JOIN `complaint_images` as `ci` ON c.complaint_id=ci.complaint_id";
+            
         $res=mysqli_query($con,$q);
         echo "<h1 style='text-align: center;'>complaints feed</h1>";
         while($row=mysqli_fetch_assoc($res))
@@ -40,6 +41,7 @@
                 echo "<p>" .  "Desc:  " . $row['description'] . "</p>";
                 echo "<p>" . "Category:  " . $row['category'] . "</p>";
                 echo "<p>" . "City:  " . $row['city'] . "</p>";
+                echo "<p>" . "image:  " . $row['image_path'] . "</p>";
                 echo "<hr>";
             }
     ?>
