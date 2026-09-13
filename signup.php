@@ -28,7 +28,7 @@ if($con->connect_error) die("Connection Failed: " . $con->connect_error);
 
 <?php
     echo "<a href='login.php'>";
-    $backpath = "/dashboard/CivicComplaints/Civic-Complaints/photos/" . "back.jpg";
+    $backpath = "/dashboard/CivicComplaints/Civic-Complaints/assets/" . "back.jpg";
     echo "<img src='$backpath' width='50px'></a>";
                    
     if(isset($_REQUEST['sub']))

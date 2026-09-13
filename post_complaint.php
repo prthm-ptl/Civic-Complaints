@@ -36,7 +36,7 @@ else{
 
 <?php
 echo "<a href='feed.php'>";
-$backpath = "/dashboard/CivicComplaints/Civic-Complaints/photos/" . "back.jpg";
+$backpath = "/dashboard/CivicComplaints/Civic-Complaints/assets/" . "back.jpg";
 echo "<img src='$backpath' width='50px'></a>";
 
 if(isset($_REQUEST['sub']))

@@ -28,16 +28,18 @@
     
     <?php
         
-        $q="SELECT * FROM `complaints`";
+        $q="SELECT * 
+            FROM `complaints` as `c`
+            JOIN `complaint_images` as `ci` ON c.complaint_id=ci.complaint_id";
         $res=mysqli_query($con,$q);
         echo "<h1 style='text-align: center;'>complaints feed</h1>";
-        while($row=mysqli_fetch_row($res))
+        while($row=mysqli_fetch_assoc($res))
             {
                 echo "<hr>";
-                echo "<h3>" . "Title:  " . $row[2] . "</h3>";
-                echo "<p>" .  "Desc:  " . $row[3] . "</p>";
-                echo "<p>" . "Category:  " . $row[4] . "</p>";
-                echo "<p>" . "City:  " . $row[5] . "</p>";
+                echo "<h3>" . "Title:  " . $row['title'] . "</h3>";
+                echo "<p>" .  "Desc:  " . $row['description'] . "</p>";
+                echo "<p>" . "Category:  " . $row['category'] . "</p>";
+                echo "<p>" . "City:  " . $row['city'] . "</p>";
                 echo "<hr>";
             }
     ?>
