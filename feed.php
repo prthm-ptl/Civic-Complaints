@@ -1,21 +1,7 @@
 <?php 
+
     session_start();
     $con=mysqli_connect("localhost","root","","CivicComplaintsDB");
-    if(isset($_SESSION['user']))
-        {
-            echo "welcome, MR" . $_SESSION['user'] . "<br>";
-            echo "<a href='post_complaint.php'>post a complaint</a>" . "<br>";
-            echo "<a href='logout.php'>logout</a>";
-
-            if(isset($_SESSION['message']))
-            {
-            echo "<p>" . $_SESSION['message'] . "</p>";
-            unset($_SESSION['message']); 
-            }
-        }
-    else{
-        echo "<a href='login.php'>login to post a complaint.</a>";
-    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,9 +11,23 @@
     <title>feed</title>
 </head>
 <body>
-    
     <?php
-        
+        if(isset($_SESSION['user']))
+            {
+                echo "welcome, MR" . $_SESSION['user'] . "<br>";
+                echo "<a href='post_complaint.php'>post a complaint</a>" . "<br>";
+                echo "<a href='logout.php'>logout</a>";
+
+                if(isset($_SESSION['message']))
+                {
+                echo "<p>" . $_SESSION['message'] . "</p>";//complaint posted message
+                unset($_SESSION['message']); 
+                }
+            }
+        else{
+            echo "<a href='login.php'>login to post a complaint.</a>";
+        }
+
         $q="SELECT c.*,ci.image_path
             FROM `complaints` as `c`
             LEFT JOIN `complaint_images` as `ci` ON c.complaint_id=ci.complaint_id";
@@ -41,7 +41,8 @@
                 echo "<p>" .  "Desc:  " . $row['description'] . "</p>";
                 echo "<p>" . "Category:  " . $row['category'] . "</p>";
                 echo "<p>" . "City:  " . $row['city'] . "</p>";
-                echo "<p>" . "image:  " . $row['image_path'] . "</p>";
+                echo "<img src='/dashboard/pratham/images/$row[image_path]' width='250' height='auto' ><br>";
+                echo "<a href='inspect_complaint.php?id={$row['complaint_id']}'>inspect</a>";
                 echo "<hr>";
             }
     ?>
