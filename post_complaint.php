@@ -70,10 +70,16 @@ if(isset($_REQUEST['sub']))
                 {
                     echo "Error: Could not save image.";
                 }
+                $qimage = $con->prepare("INSERT INTO `complaint_images` (`complaint_id`, `image_path`, `type`, `uploaded_by`) VALUES (?, ?, 'complaint', NULL)");
+                $qimage->bind_param("is", $complaint_id, $image);
+                if(!$qimage->execute())
+                {
+                    echo "Error: " . $con->error;
+                }
             }
             else
             {
-                $image = "No image";
+                
             }
         
 
@@ -88,18 +94,18 @@ if(isset($_REQUEST['sub']))
             $abc=1;
         }
         
-        $qimage = $con->prepare("INSERT INTO `complaint_images` (`complaint_id`, `image_path`, `type`, `uploaded_by`) VALUES (?, ?, 'complaint', NULL)");
-        $qimage->bind_param("is", $complaint_id, $image);
-        if(!$qimage->execute())
-            {
-                echo "Error: " . $con->error;
-            }
+        
+        
 
         if(isset($_REQUEST['sub']) and isset($abc))
         {
             $_SESSION['message'] = "Complaint posted successfully!";
             header("location:feed.php");
         }
+        else
+            {
+                echo "Error";
+            }
     }
 } 
 ?>

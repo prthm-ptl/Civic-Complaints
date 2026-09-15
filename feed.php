@@ -41,7 +41,15 @@
                 echo "<p>" .  "Desc:  " . $row['description'] . "</p>";
                 echo "<p>" . "Category:  " . $row['category'] . "</p>";
                 echo "<p>" . "City:  " . $row['city'] . "</p>";
-                echo "<img src='/dashboard/pratham/images/$row[image_path]' width='250' height='auto' ><br>";
+                if(!is_null($row['image_path']))
+                    {
+                        echo "<img src='/dashboard/pratham/images/{$row['image_path']}' width='250' height='auto'> <br>";
+                    }
+                else
+                    {
+                        echo "no image provided <br>";
+
+                    }
                 echo "<a href='inspect_complaint.php?id={$row['complaint_id']}'>inspect</a>";
                 echo "<hr>";
             }
