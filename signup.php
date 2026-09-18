@@ -19,10 +19,10 @@ if($con->connect_error) die("Connection Failed: " . $con->connect_error);
     <input type="text" name="name" placeholder="your name" pattern="[a-zA-Z]+" required/>
     <input type="text" name="username_php" placeholder="username" pattern="[a-zA-Z0-9]+" required/>
     <input type="password" name="pswd_php" placeholder="password" required/>
-    <select name="role_php" >
+    <!-- <select name="role_php" >
         <option value="citizen" selected>citizen</option>
         <option value="officer">officer</option>
-    </select>
+    </select> -->
     <input type="submit" name="sub"/>
 </form>
 
@@ -36,11 +36,11 @@ if($con->connect_error) die("Connection Failed: " . $con->connect_error);
             $name = ucfirst($_REQUEST['name']); //to capitalize the first letter of the name
             $username = $_REQUEST['username_php'];
             $pswd = password_hash($_REQUEST['pswd_php'],PASSWORD_BCRYPT);
-            $role = $_REQUEST['role_php'];
+            // $role = $_REQUEST['role_php'];
             $photoname = $name[0] . ".png"; //to set the profile picture name as the first letter of the name with .png extension
             
-            $q = $con->prepare("INSERT INTO `users` (`username`, `password`, `name`, `role`, `pfp`) VALUES (?,?,?,?,?)");
-            $q->bind_param("sssss", $username, $pswd, $name, $role, $photoname);
+            $q = $con->prepare("INSERT INTO `users` (`username`, `password`, `name`, `pfp`) VALUES (?,?,?,?)");
+            $q->bind_param("ssss", $username, $pswd, $name, $photoname);
             if(!$q->execute())
                 {
                     echo "Error: " . $con->error;

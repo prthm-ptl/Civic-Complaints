@@ -13,12 +13,11 @@ if($con->connect_error) die("Connection Failed: " . $con->connect_error);
 </head>
 <body>
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" >
-    <input type="text" name="username_php" placeholder="username"/>
-    <input type="password" name="pswd_php" placeholder="password" />
-    <input type="submit" name="sub" value="submit"/>
-    <input type="submit" name="sign_up" value="Sign Up"  />
-    
-</form>
+        <input type="text" name="username_php" placeholder="username"/>
+        <input type="password" name="pswd_php" placeholder="password" />
+        <input type="submit" name="sub" value="submit"/>
+        <input type="submit" name="sign_up" value="Sign Up"  />
+    </form>
 <?php
     if(isset($_REQUEST["sub"]))
         {

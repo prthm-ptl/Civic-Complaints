@@ -14,7 +14,7 @@
     <?php
         if(isset($_SESSION['user']))
             {
-                echo "welcome, MR" . $_SESSION['user'] . "<br>";
+                echo "welcome, MR " . $_SESSION['user'] . "<br>";
                 echo "<a href='post_complaint.php'>post a complaint</a>" . "<br>";
                 echo "<a href='logout.php'>logout</a>";
 
@@ -48,7 +48,6 @@
                 else
                     {
                         echo "no image provided <br>";
-
                     }
                 echo "<a href='inspect_complaint.php?id={$row['complaint_id']}'>inspect</a>";
                 echo "<hr>";
