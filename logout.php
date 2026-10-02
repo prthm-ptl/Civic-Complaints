@@ -2,5 +2,6 @@
     session_start();
     session_unset();
     session_destroy();
-    header('location:feed.php');
+    header('location: feed.php');
+    exit;
 ?>

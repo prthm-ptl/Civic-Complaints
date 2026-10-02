@@ -1,7 +1,35 @@
-<?php 
+<?php
 session_start();
-$con = new mysqli("localhost","root","","CivicComplaintsDB");
-if($con->connect_error) die("Connection Failed: " . $con->connect_error);
+$con = new mysqli("localhost", "root", "", "CivicComplaintsDB");
+if ($con->connect_error) die("Connection Failed: " . $con->connect_error);
+
+$error = "";
+
+if (isset($_REQUEST["sub"])) {
+    $ver_username = trim($_REQUEST["username_php"]);
+    $ver_pswd = $_REQUEST["pswd_php"];
+
+    $q = $con->prepare("SELECT * FROM `users` WHERE username=?");
+    $q->bind_param("s", $ver_username);
+    $q->execute();
+    $p = $q->get_result();
+
+    if ($p && mysqli_num_rows($p)) {
+        $array = mysqli_fetch_array($p);
+        if (password_verify($ver_pswd, $array['password'])) {
+            $_SESSION['userid'] = $array['user_id'];
+            $_SESSION['role'] = $array['role'];
+            $_SESSION['user'] = $array['name'];
+            header("location: feed.php");
+            exit;
+        } else {
+            $error = "Username or password mismatch.";
+        }
+    } else {
+        $error = "Username or password mismatch.";
+    }
+}
+
 
 ?>
 <!DOCTYPE html>
@@ -9,52 +37,27 @@ if($con->connect_error) die("Connection Failed: " . $con->connect_error);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>login</title>
+    <title>Login - Civic Complaints</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" >
-        <input type="text" name="username_php" placeholder="username"/>
-        <input type="password" name="pswd_php" placeholder="password" />
-        <input type="submit" name="sub" value="submit"/>
-        <input type="submit" name="sign_up" value="Sign Up"  />
-    </form>
-<?php
-    if(isset($_REQUEST["sub"]))
-        {
-            $ver_username = $_REQUEST["username_php"];
-            $ver_pswd = $_REQUEST["pswd_php"];
+<header class="topbar">
+    <a class="brand" href="feed.php">Civic Complaints</a>
+</header>
 
-            $q = $con->prepare("SELECT * FROM `users` WHERE username=?");
-            $q->bind_param("s", $ver_username);
-            $q->execute();
-            $p = $q->get_result();
-            if($p)
-                {   
-                    if(mysqli_num_rows($p))
-                        {
-                            $array=mysqli_fetch_array($p);
-                            if($ver_username && password_verify($ver_pswd,$array['password']))
-                                {
-                                    $_SESSION['userid']=$array['user_id'];
-                                    $_SESSION['role']=$array['role'];
-                                    $_SESSION['user']=$array['name'];
-                                    header("location: feed.php");
-                                }
-                                else{
-                                    echo "username or password mismatch";
-                                }
-                        }
-                    else{
-                        echo "username or password mismatch";
-                    }
-                }
-        }
-    
-    if(isset($_REQUEST["sign_up"]))
-        {
-            header("location: signup.php");
-        }
-?>
+<div class="container">
+    <h1>Login</h1>
+
+    <?php if ($error): ?>
+        <div class="error"><?php echo htmlspecialchars($error); ?></div>
+    <?php endif; ?>
+
+    <form action="login.php" method="post">
+        <input type="text" name="username_php" placeholder="username" required/>
+        <input type="password" name="pswd_php" placeholder="password" required/>
+        <input type="submit" name="sub" value="Login"/>
+    </form>
+    <a href="signup.php"><button type="button">Sign Up</button></a>
+</div>
 </body>
 </html>
-

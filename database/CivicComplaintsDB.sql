@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 27, 2026 at 03:21 PM
+-- Generation Time: Oct 02, 2026 at 02:20 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,6 +24,21 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `comments`
+--
+
+CREATE TABLE `comments` (
+  `comment_id` int(11) NOT NULL,
+  `complaint_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `comment_text` text DEFAULT NULL,
+  `image_path` varchar(300) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `complaints`
 --
 
@@ -35,7 +50,24 @@ CREATE TABLE `complaints` (
   `category` enum('road','drain','garbage','corruption','other') NOT NULL,
   `city` varchar(100) NOT NULL,
   `status` enum('open','in_progress','resolved') DEFAULT 'open',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `closed_by` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `complaint_comments`
+--
+
+CREATE TABLE `complaint_comments` (
+  `comment_id` int(11) NOT NULL,
+  `complaint_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `comment_text` text NOT NULL,
+  `resolution_image` varchar(300) DEFAULT NULL,
+  `is_pinned` tinyint(1) NOT NULL DEFAULT 0,
+  `commented_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -74,10 +106,27 @@ CREATE TABLE `users` (
 --
 
 --
+-- Indexes for table `comments`
+--
+ALTER TABLE `comments`
+  ADD PRIMARY KEY (`comment_id`),
+  ADD KEY `complaint_id` (`complaint_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- Indexes for table `complaints`
 --
 ALTER TABLE `complaints`
   ADD PRIMARY KEY (`complaint_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `complaints_ibfk_2` (`closed_by`);
+
+--
+-- Indexes for table `complaint_comments`
+--
+ALTER TABLE `complaint_comments`
+  ADD PRIMARY KEY (`comment_id`),
+  ADD KEY `complaint_id` (`complaint_id`),
   ADD KEY `user_id` (`user_id`);
 
 --
@@ -99,10 +148,22 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `comments`
+--
+ALTER TABLE `comments`
+  MODIFY `comment_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `complaints`
 --
 ALTER TABLE `complaints`
   MODIFY `complaint_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `complaint_comments`
+--
+ALTER TABLE `complaint_comments`
+  MODIFY `comment_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `complaint_images`
@@ -121,10 +182,25 @@ ALTER TABLE `users`
 --
 
 --
+-- Constraints for table `comments`
+--
+ALTER TABLE `comments`
+  ADD CONSTRAINT `unique_comments_ibfk_1` FOREIGN KEY (`complaint_id`) REFERENCES `complaints` (`complaint_id`),
+  ADD CONSTRAINT `unique_comments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+--
 -- Constraints for table `complaints`
 --
 ALTER TABLE `complaints`
-  ADD CONSTRAINT `complaints_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+  ADD CONSTRAINT `complaints_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
+  ADD CONSTRAINT `complaints_ibfk_2` FOREIGN KEY (`closed_by`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `complaint_comments`
+--
+ALTER TABLE `complaint_comments`
+  ADD CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`complaint_id`) REFERENCES `complaints` (`complaint_id`),
+  ADD CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `complaint_images`

@@ -1,79 +1,69 @@
 <?php
 session_start();
-$con = new mysqli("localhost","root","","CivicComplaintsDB");
-if($con->connect_error) die("Connection Failed: " . $con->connect_error);
+$con = new mysqli("localhost", "root", "", "CivicComplaintsDB");
+if ($con->connect_error) die("Connection Failed: " . $con->connect_error);
 
+$error = "";
 
+if (isset($_REQUEST['sub'])) {
+    $name = ucfirst(trim($_REQUEST['name']));
+    $username = trim($_REQUEST['username_php']);
+    $pswd = password_hash($_REQUEST['pswd_php'], PASSWORD_BCRYPT);
+    $role = 'citizen'; // signup always creates citizens; officer accounts are set up separately
+    $photoname = $name[0] . ".png";
+
+    // check the username isn't already taken before inserting
+    $check = $con->prepare("SELECT user_id FROM `users` WHERE username=?");
+    $check->bind_param("s", $username);
+    $check->execute();
+    $check->store_result();
+
+    if ($check->num_rows > 0) {
+        $error = "That username is already taken.";
+    } else {
+        $q = $con->prepare("INSERT INTO `users` (`username`, `password`, `name`, `role`, `pfp`) VALUES (?,?,?,?,?)");
+        $q->bind_param("sssss", $username, $pswd, $name, $role, $photoname);
+
+        if (!$q->execute()) {
+            $error = "Error creating account: " . $con->error;
+        } else {
+            $_SESSION['userid'] = $con->insert_id;
+            $_SESSION['role'] = $role;
+            $_SESSION['user'] = $name;
+            header("location: feed.php");
+            exit;
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>signup</title>
+    <title>Sign Up - Civic Complaints</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
+<header class="topbar">
+    <a class="brand" href="feed.php">Civic Complaints</a>
+</header>
 
-    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data" >
-    <input type="text" name="name" placeholder="your name" pattern="[a-zA-Z]+" required/>
-    <input type="text" name="username_php" placeholder="username" pattern="[a-zA-Z0-9]+" required/>
-    <input type="password" name="pswd_php" placeholder="password" required/>
-    <!-- <select name="role_php" >
-        <option value="citizen" selected>citizen</option>
-        <option value="officer">officer</option>
-    </select> -->
-    <input type="submit" name="sub"/>
-</form>
+<div class="container">
+    <h1>Sign Up</h1>
 
-<?php
-    echo "<a href='login.php'>";
-    $backpath = "/dashboard/CivicComplaints/Civic-Complaints/assets/" . "back.jpg";
-    echo "<img src='$backpath' width='50px'></a>";
-                   
-    if(isset($_REQUEST['sub']))
-        {
-            $name = ucfirst($_REQUEST['name']); //to capitalize the first letter of the name
-            $username = $_REQUEST['username_php'];
-            $pswd = password_hash($_REQUEST['pswd_php'],PASSWORD_BCRYPT);
-            // $role = $_REQUEST['role_php'];
-            $photoname = $name[0] . ".png"; //to set the profile picture name as the first letter of the name with .png extension
-            
-            $q = $con->prepare("INSERT INTO `users` (`username`, `password`, `name`, `pfp`) VALUES (?,?,?,?)");
-            $q->bind_param("ssss", $username, $pswd, $name, $photoname);
-            if(!$q->execute())
-                {
-                    echo "Error: " . $con->error;
-                }
-            $ver_username = $_REQUEST["username_php"];
-            $ver_pswd = $_REQUEST["pswd_php"];
+    <?php if ($error): ?>
+        <div class="error"><?php echo htmlspecialchars($error); ?></div>
+    <?php endif; ?>
 
-            $q = $con->prepare("SELECT * FROM `users` WHERE username=?");
-            $q->bind_param("s", $ver_username);
-            $q->execute();
-            $p = $q->get_result();
-            if($p)
-                {   
-                    if(mysqli_num_rows($p))
-                        {
-                            $array=mysqli_fetch_array($p);
-                            if($ver_username && password_verify($ver_pswd,$array['password']))
-                                {
-                                    $_SESSION['userid']=$array['user_id'];
-                                    $_SESSION['role']=$array['role'];
-                                    $_SESSION['user']=$array['name'];
-                                    header("location: feed.php");
-                                }
-                                else{
-                                    echo "error: username or password mismatch";
-                                }
-                        }
-                    else{
-                        echo "error: username or password mismatch";
-                    }
-                }
-        }
+    <form action="signup.php" method="post">
+        <input type="text" name="name" placeholder="your name" pattern="[a-zA-Z]+" required/>
+        <input type="text" name="username_php" placeholder="username" pattern="[a-zA-Z0-9]+" required/>
+        <input type="password" name="pswd_php" placeholder="password" required/>
+        <input type="submit" name="sub" value="Create account"/>
+    </form>
 
-?>
+    <p class="back-link"><a href="login.php">Already have an account? Login</a></p>
+</div>
 </body>
 </html>
