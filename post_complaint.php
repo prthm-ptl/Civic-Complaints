@@ -1,7 +1,6 @@
 <?php
 session_start();
-$con = new mysqli("localhost", "root", "", "CivicComplaintsDB");
-if ($con->connect_error) die("Connection Failed: " . $con->connect_error);
+require_once 'db_connect.php';
 
 if (!isset($_SESSION['userid'])) {
     header("location: login.php");
@@ -11,13 +10,12 @@ if (!isset($_SESSION['userid'])) {
 $error = "";
 
 if (isset($_REQUEST['sub'])) {
-    $title = trim($_REQUEST['title_php']);
-    $desc = trim($_REQUEST['desc_php']);
+    $title    = trim($_REQUEST['title_php']);
+    $desc     = trim($_REQUEST['desc_php']);
     $category = $_REQUEST['category_php'];
-    $city = trim($_REQUEST['city_php']);
-    $userid = $_SESSION['userid'];
+    $city     = trim($_REQUEST['city_php']);
+    $userid   = $_SESSION['userid'];
 
-    // 1. insert the complaint first so we have a real complaint_id to attach an image to
     $q = $con->prepare("INSERT INTO `complaints` (`user_id`, `title`, `description`, `category`, `city`) VALUES (?,?,?,?,?)");
     $q->bind_param("issss", $userid, $title, $desc, $category, $city);
 
@@ -26,20 +24,17 @@ if (isset($_REQUEST['sub'])) {
     } else {
         $complaint_id = $con->insert_id;
 
-        // 2. handle the optional image now that complaint_id exists
         if (!empty($_FILES['image']['name'])) {
             $allowed_extensions = ['jpg', 'jpeg', 'png'];
-            $allowed_mimes = ['image/jpeg', 'image/png'];
-
-            $file_ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+            $allowed_mimes      = ['image/jpeg', 'image/png'];
+            $file_ext  = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
             $file_mime = mime_content_type($_FILES['image']['tmp_name']);
 
             if (!in_array($file_ext, $allowed_extensions) || !in_array($file_mime, $allowed_mimes)) {
                 $error = "Complaint posted, but the image was skipped: only JPG and PNG are allowed.";
             } else {
-                $image = uniqid() . '.' . $file_ext;
-                $path = __DIR__ . "/complaints/photos/";
-                $newpath = $path . $image;
+                $image   = uniqid() . '.' . $file_ext;
+                $newpath = UPLOAD_DIR . $image;
 
                 if (!move_uploaded_file($_FILES["image"]["tmp_name"], $newpath)) {
                     $error = "Complaint posted, but the image could not be saved.";

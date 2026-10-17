@@ -1,18 +1,16 @@
 <?php
 session_start();
-$con = new mysqli("localhost", "root", "", "CivicComplaintsDB");
-if ($con->connect_error) die("Connection Failed: " . $con->connect_error);
+require_once 'db_connect.php';
 
 $error = "";
 
 if (isset($_REQUEST['sub'])) {
-    $name = ucfirst(trim($_REQUEST['name']));
+    $name     = ucfirst(trim($_REQUEST['name']));
     $username = trim($_REQUEST['username_php']);
-    $pswd = password_hash($_REQUEST['pswd_php'], PASSWORD_BCRYPT);
-    $role = 'citizen'; // signup always creates citizens; officer accounts are set up separately
+    $pswd     = password_hash($_REQUEST['pswd_php'], PASSWORD_BCRYPT);
+    $role     = 'citizen';
     $photoname = $name[0] . ".png";
 
-    // check the username isn't already taken before inserting
     $check = $con->prepare("SELECT user_id FROM `users` WHERE username=?");
     $check->bind_param("s", $username);
     $check->execute();
@@ -28,8 +26,8 @@ if (isset($_REQUEST['sub'])) {
             $error = "Error creating account: " . $con->error;
         } else {
             $_SESSION['userid'] = $con->insert_id;
-            $_SESSION['role'] = $role;
-            $_SESSION['user'] = $name;
+            $_SESSION['role']   = $role;
+            $_SESSION['user']   = $name;
             header("location: feed.php");
             exit;
         }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 02, 2026 at 02:20 PM
+-- Generation Time: Oct 17, 2026 at 05:48 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,21 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `CivicComplaintsDB`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `comments`
---
-
-CREATE TABLE `comments` (
-  `comment_id` int(11) NOT NULL,
-  `complaint_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `comment_text` text DEFAULT NULL,
-  `image_path` varchar(300) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -65,7 +50,7 @@ CREATE TABLE `complaint_comments` (
   `complaint_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `comment_text` text NOT NULL,
-  `resolution_image` varchar(300) DEFAULT NULL,
+  `image_path` varchar(300) DEFAULT NULL,
   `is_pinned` tinyint(1) NOT NULL DEFAULT 0,
   `commented_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -106,14 +91,6 @@ CREATE TABLE `users` (
 --
 
 --
--- Indexes for table `comments`
---
-ALTER TABLE `comments`
-  ADD PRIMARY KEY (`comment_id`),
-  ADD KEY `complaint_id` (`complaint_id`),
-  ADD KEY `user_id` (`user_id`);
-
---
 -- Indexes for table `complaints`
 --
 ALTER TABLE `complaints`
@@ -148,12 +125,6 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `comments`
---
-ALTER TABLE `comments`
-  MODIFY `comment_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `complaints`
 --
 ALTER TABLE `complaints`
@@ -180,13 +151,6 @@ ALTER TABLE `users`
 --
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `comments`
---
-ALTER TABLE `comments`
-  ADD CONSTRAINT `unique_comments_ibfk_1` FOREIGN KEY (`complaint_id`) REFERENCES `complaints` (`complaint_id`),
-  ADD CONSTRAINT `unique_comments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `complaints`

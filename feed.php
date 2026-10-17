@@ -1,16 +1,12 @@
 <?php
 session_start();
-$con = new mysqli("localhost", "root", "", "CivicComplaintsDB");
-if ($con->connect_error) die("Connection Failed: " . $con->connect_error);
+require_once 'db_connect.php';
 
-// officers get their own dashboard; guests and citizens see this feed
 if (isset($_SESSION['role']) && $_SESSION['role'] == 'officer') {
     header('location: officer_dashboard.php');
     exit;
 }
 
-// one row per complaint, with at most one preview image, instead of the old
-// LEFT JOIN that duplicated a complaint once per attached image
 $q = "SELECT c.*,
         (SELECT image_path FROM complaint_images WHERE complaint_id = c.complaint_id AND type = 'complaint' LIMIT 1) AS image_path
       FROM `complaints` c
