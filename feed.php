@@ -7,9 +7,13 @@ if (isset($_SESSION['role']) && $_SESSION['role'] == 'officer') {
     exit;
 }
 
+// Join users so we can get pfp for the logged-in user's own complaints
 $q = "SELECT c.*,
-        (SELECT image_path FROM complaint_images WHERE complaint_id = c.complaint_id AND type = 'complaint' LIMIT 1) AS image_path
+        (SELECT image_path FROM complaint_images WHERE complaint_id = c.complaint_id AND type = 'complaint' LIMIT 1) AS image_path,
+        u.pfp AS poster_pfp,
+        u.name AS poster_name
       FROM `complaints` c
+      JOIN `users` u ON c.user_id = u.user_id
       ORDER BY c.created_at DESC";
 $res = mysqli_query($con, $q);
 ?>
@@ -20,6 +24,34 @@ $res = mysqli_query($con, $q);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feed - Civic Complaints</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .pfp {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            vertical-align: middle;
+            margin-right: 8px;
+            border: 2px solid #2a6f6f;
+        }
+        .welcome-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .complaint-poster {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            color: #444;
+        }
+        .complaint-poster .pfp {
+            width: 28px;
+            height: 28px;
+            margin-right: 6px;
+        }
+    </style>
 </head>
 <body>
 <header class="topbar">
@@ -36,7 +68,14 @@ $res = mysqli_query($con, $q);
 
 <div class="container">
     <?php if (isset($_SESSION['user'])): ?>
-        <p class="meta">Welcome, <?php echo htmlspecialchars($_SESSION['user']); ?></p>
+        <div class="welcome-row">
+            <img
+                src="assets/<?php echo htmlspecialchars($_SESSION['pfp']); ?>"
+                alt="<?php echo htmlspecialchars($_SESSION['user']); ?>"
+                class="pfp"
+            >
+            <span class="meta">Welcome, <strong><?php echo htmlspecialchars($_SESSION['user']); ?></strong></span>
+        </div>
     <?php endif; ?>
 
     <?php if (isset($_SESSION['message'])): ?>
@@ -47,6 +86,22 @@ $res = mysqli_query($con, $q);
 
     <?php while ($row = mysqli_fetch_assoc($res)): ?>
         <div class="complaint-card">
+
+            <?php
+            // Only show poster identity to the person who filed the complaint
+            $is_own = isset($_SESSION['userid']) && (int)$_SESSION['userid'] === (int)$row['user_id'];
+            if ($is_own):
+            ?>
+                <div class="complaint-poster">
+                    <img
+                        src="assets/<?php echo htmlspecialchars($row['poster_pfp']); ?>"
+                        alt="You"
+                        class="pfp"
+                    >
+                    <span>You posted this</span>
+                </div>
+            <?php endif; ?>
+
             <h3><?php echo htmlspecialchars($row['title']); ?></h3>
             <p><?php echo htmlspecialchars($row['description']); ?></p>
             <p class="meta">

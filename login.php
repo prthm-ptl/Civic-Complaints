@@ -19,6 +19,7 @@ if (isset($_REQUEST["sub"])) {
             $_SESSION['userid'] = $array['user_id'];
             $_SESSION['role']   = $array['role'];
             $_SESSION['user']   = $array['name'];
+            $_SESSION['pfp']    = $array['pfp'];   // ← added
             header("location: feed.php");
             exit;
         } else {
