@@ -4,11 +4,11 @@ require_once 'db_connect.php';
 
 $error = "";
 
-if (isset($_REQUEST['sub'])) {
-    $name      = ucfirst(trim($_REQUEST['name']));
-    $username  = trim($_REQUEST['username_php']);
-    $pswd      = password_hash($_REQUEST['pswd_php'], PASSWORD_BCRYPT);
-    $role      = 'citizen';
+if (isset($_POST['sub'])) {
+    $name     = ucfirst(trim($_POST['name']));
+    $username = trim($_POST['username_php']);
+    $pswd     = password_hash($_POST['pswd_php'], PASSWORD_BCRYPT);
+    $role     = 'citizen';
     $photoname = $name[0] . ".png";
 
     $check = $con->prepare("SELECT user_id FROM `users` WHERE username=?");
@@ -28,7 +28,6 @@ if (isset($_REQUEST['sub'])) {
             $_SESSION['userid'] = $con->insert_id;
             $_SESSION['role']   = $role;
             $_SESSION['user']   = $name;
-            $_SESSION['pfp']    = $photoname;   // ← added
             header("location: feed.php");
             exit;
         }

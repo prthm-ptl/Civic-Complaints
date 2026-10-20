@@ -1,19 +1,17 @@
 <?php
 session_start();
 require_once 'db_connect.php';
-
-if (!isset($_SESSION['userid'])) {
-    header("location: login.php");
-    exit;
-}
+require_once 'auth_guard.php';
+require_login();
+require_role('citizen');
 
 $error = "";
 
-if (isset($_REQUEST['sub'])) {
-    $title    = trim($_REQUEST['title_php']);
-    $desc     = trim($_REQUEST['desc_php']);
-    $category = $_REQUEST['category_php'];
-    $city     = trim($_REQUEST['city_php']);
+if (isset($_POST['sub'])) {
+    $title    = trim($_POST['title_php']);
+    $desc     = trim($_POST['desc_php']);
+    $category = $_POST['category_php'];
+    $city     = trim($_POST['city_php']);
     $userid   = $_SESSION['userid'];
 
     $q = $con->prepare("INSERT INTO `complaints` (`user_id`, `title`, `description`, `category`, `city`) VALUES (?,?,?,?,?)");

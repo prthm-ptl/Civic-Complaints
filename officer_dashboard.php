@@ -1,18 +1,16 @@
 <?php
 session_start();
 require_once 'db_connect.php';
-
-if (!isset($_SESSION['role']) || $_SESSION['role'] != 'officer') {
-    header('location: feed.php');
-    exit;
-}
+require_once 'auth_guard.php';
+require_login();
+require_role('officer');
 
 $officer_id = $_SESSION['userid'];
 
 // ---- handle officer comment ----
-if (isset($_REQUEST['post_comment'])) {
-    $complaint_id = (int) $_REQUEST['complaint_id'];
-    $comment_text = trim($_REQUEST['comment_text']);
+if (isset($_POST['post_comment'])) {
+    $complaint_id  = (int) $_POST['complaint_id'];
+    $comment_text  = trim($_POST['comment_text']);
     $comment_image = null;
 
     if (!empty($_FILES['comment_image']['name'])) {
@@ -38,9 +36,9 @@ if (isset($_REQUEST['post_comment'])) {
 }
 
 // ---- handle status update + resolution photo ----
-if (isset($_REQUEST['update_status'])) {
-    $complaint_id = (int) $_REQUEST['complaint_id'];
-    $new_status   = $_REQUEST['new_status'];
+if (isset($_POST['update_status'])) {
+    $complaint_id = (int) $_POST['complaint_id'];
+    $new_status   = $_POST['new_status'];
 
     $allowed_statuses = ['open', 'in_progress', 'resolved'];
     if (!in_array($new_status, $allowed_statuses)) die("Invalid status.");
@@ -81,9 +79,9 @@ if (isset($_REQUEST['update_status'])) {
 }
 
 // ---- filters ----
-$filter_city     = isset($_REQUEST['filter_city'])     ? trim($_REQUEST['filter_city'])     : '';
-$filter_category = isset($_REQUEST['filter_category']) ? $_REQUEST['filter_category']       : '';
-$filter_status   = isset($_REQUEST['filter_status'])   ? $_REQUEST['filter_status']         : '';
+$filter_city     = isset($_GET['filter_city'])     ? trim($_GET['filter_city'])     : '';
+$filter_category = isset($_GET['filter_category']) ? $_GET['filter_category']       : '';
+$filter_status   = isset($_GET['filter_status'])   ? $_GET['filter_status']         : '';
 
 $query  = "SELECT * FROM `complaints` WHERE 1=1";
 $params = [];
@@ -110,7 +108,10 @@ $result = $stmt->get_result();
 <body>
 <header class="topbar">
     <a class="brand" href="officer_dashboard.php">Civic Complaints</a>
-    <nav><a href="logout.php">Logout</a></nav>
+    <nav>
+        <a href="feed.php?lurk=1">View public feed</a>
+        <a href="logout.php">Logout</a>
+    </nav>
 </header>
 
 <div class="container">
@@ -196,7 +197,7 @@ $result = $stmt->get_result();
                         <span class="meta">
                             <?php if ($c['role'] === 'officer'): ?>
                                 <strong><?php echo htmlspecialchars($c['name']); ?></strong>
-                                <span class="badge">Officer</span>
+                                <span class="badge" style="display:inline-block;background:#2a6f6f;color:#fff;font-size:0.75em;padding:2px 7px;border-radius:10px;margin-left:6px;">Officer</span>
                             <?php else: ?>
                                 Anonymous
                             <?php endif; ?>

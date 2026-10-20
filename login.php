@@ -4,22 +4,21 @@ require_once 'db_connect.php';
 
 $error = "";
 
-if (isset($_REQUEST["sub"])) {
-    $ver_username = trim($_REQUEST["username_php"]);
-    $ver_pswd     = $_REQUEST["pswd_php"];
+if (isset($_POST["sub"])) {
+    $ver_username = trim($_POST["username_php"]);
+    $ver_pswd     = $_POST["pswd_php"];
 
     $q = $con->prepare("SELECT * FROM `users` WHERE username=?");
     $q->bind_param("s", $ver_username);
     $q->execute();
     $p = $q->get_result();
 
-    if ($p && mysqli_num_rows($p)) {
-        $array = mysqli_fetch_array($p);
+    if ($p && $p->num_rows > 0) {
+        $array = $p->fetch_assoc();
         if (password_verify($ver_pswd, $array['password'])) {
             $_SESSION['userid'] = $array['user_id'];
             $_SESSION['role']   = $array['role'];
             $_SESSION['user']   = $array['name'];
-            $_SESSION['pfp']    = $array['pfp'];   // ← added
             header("location: feed.php");
             exit;
         } else {
@@ -55,7 +54,7 @@ if (isset($_REQUEST["sub"])) {
         <input type="password" name="pswd_php" placeholder="password" required/>
         <input type="submit" name="sub" value="Login"/>
     </form>
-    <a href="signup.php"><button type="button">Sign Up</button></a>
+    <a class="btn" href="signup.php">Sign Up</a>
 </div>
 </body>
 </html>
